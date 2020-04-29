@@ -82,7 +82,9 @@ origin_pattern <- regex(
   'from [\\p{Letter}Ã±0-9/-]+', ignore_case = TRUE)
 
 extract_clean_sets <- function(s){
-  
+  if (remove_cruft(s) == ''){
+    return (NA)
+  }
   clean_sets <- list()
   r1 <- split_on_set_separators(s)
   r2 <- setNames(vapply(r1, remove_cruft, FUN.VALUE = ''), NULL)
@@ -94,7 +96,8 @@ extract_clean_sets <- function(s){
       
       clean_sets <- append(clean_sets, relink_partnerships(rt))
     } else {
-      clean_sets <- append(clean_sets, v)
+      rt <- setNames(extract_names(v), NULL)
+      clean_sets <- append(clean_sets, relink_partnerships(rt, 'from_names'))
     }
   }
   return (clean_sets)
@@ -163,22 +166,43 @@ extract_names <- function(s, direction = 'lhs'){
   return (splits) 
 }
 
-relink_partnerships <- function(l){
+relink_partnerships <- function(l, method = 'from_split'){
   
   sets <- list()
   skip_next <- FALSE
-  for (v_idx in seq_along(l)){
-    v <- l[[v_idx]]
-    for (n_idx in seq_along(v)){
+  if (method == 'from_split'){
+    # Expects a list of vectors of strings
+    for (v_idx in seq_along(l)){
+      v <- l[[v_idx]]
+      for (n_idx in seq_along(v)){
+        if (! skip_next){
+          if (n_idx == length(v) & v_idx < length(l)){
+            t <- c(v[n_idx], l[[v_idx + 1]][1])
+            sets[[length(sets) + 1]] <- t
+            skip_next <- TRUE
+          } else {
+            sets[[length(sets) + 1]] <- v[n_idx]
+            skip_next <- FALSE
+          }
+        } else { skip_next <- FALSE}
+      }
+    }
+  } else if (method == 'from_names'){
+    # Expects a list or vector of strings
+    for (s_idx in seq_along(l)){
+      s1 <- l[[s_idx]]
       if (! skip_next){
-        if (n_idx == length(v) & v_idx < length(l)){
-          t <- c(v[n_idx], l[[v_idx + 1]][1])
-          sets[[length(sets) + 1]] <- t
-          skip_next <- TRUE
-        } else {
-          sets[[length(sets) + 1]] <- v[n_idx]
-          skip_next <- FALSE
+        t <- s1
+        if (s_idx < length(l)){
+          s2 <- l[[s_idx + 1]]
+          words_s1 <- s1 %>% str_extract_all(pattern = word_pattern, simplify = TRUE)
+          words_s2 <- s2 %>% str_extract_all(pattern = word_pattern, simplify = TRUE)
+          if (words_s1[length(words_s1)] == words_s2[length(words_s2)]){
+            t <- c(s1, s2)
+            skip_next <- TRUE
+          }
         }
+        sets[[length(sets) + 1]] <- t
       } else { skip_next <- FALSE}
     }
   }
