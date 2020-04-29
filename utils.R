@@ -12,7 +12,7 @@ build_placenames_list <- function(data_file = 'data/geonames.jsonlines'){
 }
 # placenames <- build_placenames_list()
 
-call_geonames <- function(location, country=NULL, continent=NULL) {
+call_geonames <- function(location, country='', continent='') {
   
   do_request <- function(location, country, continent){
     code_continent <- switch(continent,
@@ -59,11 +59,11 @@ call_geonames <- function(location, country=NULL, continent=NULL) {
     
     return (list('longitude' = lon, 'latitude' = lat))
   }
-    
+
   response <- do_request(location, country, continent)
   result <- parse_response(response)
   
-  if (purrrr::has_element(result, NA)){
+  if (purrr::has_element(result, NA)){
     els <- strsplit(location, split = '(,| )')[[1]]
     best_guess <- els[els %in% placenames[[1]]][1]
     response <- geonames_call(location = els, country = '', code_continent = '')
@@ -74,11 +74,11 @@ call_geonames <- function(location, country=NULL, continent=NULL) {
 }
 
 
-word_pattern <- regex('[\\p{Letter}Ã±.-]+', ignore_case = TRUE)
+word_pattern <- stringr::regex('[\\p{Letter}Ã±.-]+', ignore_case = TRUE)
 
-bracketed_pattern <- regex(
+bracketed_pattern <- stringr::regex(
   '\\([\\p{Letter}Ã± 0-9/-]+\\)', ignore_case = TRUE)
-origin_pattern <- regex(
+origin_pattern <- stringr::regex(
   'from [\\p{Letter}Ã±0-9/-]+', ignore_case = TRUE)
 
 extract_clean_sets <- function(s){
@@ -123,10 +123,10 @@ remove_cruft <- function(s){
     return ('')
   }
   s <- s %>%
-    str_remove_all(pattern = bracketed_pattern) %>%
-    str_remove_all(pattern = origin_pattern) %>%
-    str_trim(side = 'both') %>%
-    str_replace_all(pattern = '  +', replacement = ' ')
+    stringr::str_remove_all(pattern = bracketed_pattern) %>%
+    stringr::str_remove_all(pattern = origin_pattern) %>%
+    stringr::str_trim(side = 'both') %>%
+    stringr::str_replace_all(pattern = '  +', replacement = ' ')
   return (s)
 }
 
@@ -137,12 +137,12 @@ extract_names <- function(s, direction = 'lhs'){
     return ('')
   }
   
-  n_words <- s %>% str_count(pattern = word_pattern)
+  n_words <- s %>% stringr::str_count(pattern = word_pattern)
   if (n_words <= 3){
     return (s)
   }
   
-  words <- s %>% str_extract_all(pattern = word_pattern, simplify = TRUE)
+  words <- s %>% stringr::str_extract_all(pattern = word_pattern, simplify = TRUE)
   if (n_words %% 2 == 0){
     splits <- setNames(split(words, ceiling(seq_along(words)/2)), NULL)
   } else {
@@ -195,8 +195,8 @@ relink_partnerships <- function(l, method = 'from_split'){
         t <- s1
         if (s_idx < length(l)){
           s2 <- l[[s_idx + 1]]
-          words_s1 <- s1 %>% str_extract_all(pattern = word_pattern, simplify = TRUE)
-          words_s2 <- s2 %>% str_extract_all(pattern = word_pattern, simplify = TRUE)
+          words_s1 <- s1 %>% stringr::str_extract_all(pattern = word_pattern, simplify = TRUE)
+          words_s2 <- s2 %>% stringr::str_extract_all(pattern = word_pattern, simplify = TRUE)
           if (words_s1[length(words_s1)] == words_s2[length(words_s2)]){
             t <- c(s1, s2)
             skip_next <- TRUE
