@@ -5,7 +5,7 @@
 # library('xml2')
 
 build_placenames_list <- function(data_file = 'data/geonames.jsonlines'){
-  json_data <- jsonlite::stream_in(file(data_file))
+  json_data <- jsonlite::stream_in(file(data_file), verbose = FALSE)
   placenames <- list(subset(json_data, ascii_name != '')$ascii_name)
 
   return (placenames)
