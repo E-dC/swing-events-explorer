@@ -77,16 +77,57 @@ call_geonames <- function(location, country='', continent='') {
 word_pattern <- stringr::regex('[\\p{Letter}Ã±.-]+', ignore_case = TRUE)
 
 bracketed_pattern <- stringr::regex(
-  '\\([\\p{Letter}Ã± 0-9/-]+\\)', ignore_case = TRUE)
+  '\\([\\p{Letter}Ã± 0-9/&-]+\\)', ignore_case = TRUE)
 origin_pattern <- stringr::regex(
   'from [\\p{Letter}Ã±0-9/-]+', ignore_case = TRUE)
+# extra_pattern <- stringr::regex(
+#   '(
+#      (leads?|assistants?)\ +(instructors?|teachers?)
+#     |teachers?
+#     |(main)?\ +
+#      # (
+#      #     lindy(\ +hop)?
+#      #    |(slow\ +)?balboa
+#      #    |(collegiate|st.?\ +louis?)?(\ +)?shag
+#      #    |solo(\ +jazz)?
+#      #    |tap
+#      # )
+#       # (\ +)?
+#     # (teachers?|instructors?|:)?
+#     |(intermediates?|advanceds?|beginners?)(\ +tracks?)?
+#     # |(and)?
+#     #  (\ +)?
+#     #  (more|others?)
+#     #  (\ +are)?
+#     #  (\ +)?
+#     #  (TBA|TBC|coming\ +soon)?
+#     # |([\\p{Letter}Ã±.-]+)
+#     #  (\ +)
+#     #  (
+#     #    ((to|will)\ +be)
+#     #    (\ +)
+#     #    (announced|confirmed|coming(\ +soon)?)
+#     #   |TBA
+#     #   |TBC
+#     #  )
+#     |<3
+#   )',
+#   ignore_case = TRUE,
+#   comments = TRUE)
+
+extra_pattern <- stringr::regex(
+  '((leads?|assistants?) +(instructors?|teachers?)|teachers?|(main)? +(lindy( +hop)?|(slow +)?balboa|(collegiate|st.? +louis?)?( +)?shag|solo( +jazz)?|tap)( +)?(teachers?|instructors?|:)?|(intermediates?|advanceds?|beginners?|competitions?)( +tracks?)?|(and)?( +)?(more|others?)( +are)?( +)?(TBA|TBC|coming +soon)?|((music)? +bands?( +leaders?)?|teachers?|instructors?)?( +)(((to|will) +be)( +)(announced|confirmed|coming( +soon)?)|TBA|TBC|soon|to come)|<3|sweden.|france.|moscow|melbourne|russia|gothenburg)',
+  ignore_case = TRUE)
 
 extract_clean_sets <- function(s){
-  if (remove_cruft(s) == ''){
+  if ((class(s) != 'character' | is.na(s))){
+    return (NA)
+  } else if (remove_cruft(s) == ''){
     return (NA)
   }
   clean_sets <- list()
-  r1 <- split_on_set_separators(s)
+  r0 <- remove_cruft(s)
+  r1 <- split_on_set_separators(r0)
   r2 <- setNames(vapply(r1, remove_cruft, FUN.VALUE = ''), NULL)
   r3 <- lapply(r2, split_on_partnership_linkers)
   for (v in r3){
@@ -115,7 +156,7 @@ split_on_partnership_linkers <- function(s){
   if (s == ''){
     return ('')
   }
-  return (unlist(stringr::str_split(s,  '\\s?(&| and )\\s?')))
+  return (unlist(stringr::str_split(s,  '\\s?(&| and | y | et )\\s?')))
 }
 
 remove_cruft <- function(s){
@@ -125,6 +166,7 @@ remove_cruft <- function(s){
   s <- s %>%
     stringr::str_remove_all(pattern = bracketed_pattern) %>%
     stringr::str_remove_all(pattern = origin_pattern) %>%
+    stringr::str_remove_all(pattern = extra_pattern) %>%
     stringr::str_trim(side = 'both') %>%
     stringr::str_replace_all(pattern = '  +', replacement = ' ')
   return (s)
@@ -208,20 +250,3 @@ relink_partnerships <- function(l, method = 'from_split'){
   }
   return (sets)
 }
-
-
-# get_splits <- function(l, indices){
-#   splits <- c()
-#   for (idx in seq_along(indices)){
-#     offset_fix <- 1
-#     if (idx == length(indices)){
-#       return (splits)
-#     } else if (idx == length(indices) - 1){
-#       offset_fix <- 0
-#     }
-#     beginning <- indices[idx]
-#     end <- indices[idx+1] - offset_fix
-#     splits <- c(splits, paste(l[beginning:end], collapse = ' '))
-#   }
-#   return (splits)
-# }
