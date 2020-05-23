@@ -1,17 +1,17 @@
 testthat::context("Geonames calls")
 testthat::test_that("Paris is at the correct latitude and longitude", {
   
-  placenames_file <- file.path('..', '..', 'data', 'geonames.jsonlines')
+  placenames_file <- file.path(devtools::package_file(), 'data', 'geonames.jsonlines')
   testthat::skip_if(! file.exists(placenames_file), paste(placenames_file, 'not found, skipping test'))
   placenames <- build_placenames_list(placenames_file)
 
   lat_lon <- list(latitude = 48.85341, longitude = 2.3488)
   
-  expect_mapequal(call_geonames('Paris', 'France', 'Europe'), lat_lon)
-  expect_mapequal(call_geonames('Paris', 'France', 'Eurezfez'), lat_lon)
-  expect_mapequal(call_geonames('Paris', 'France'), lat_lon)
-  expect_mapequal(call_geonames('Paris'), lat_lon)
-  expect_error(call_geonames('sdkj'))
+  testthat::expect_mapequal(call_geonames('Paris', 'France', 'Europe'), lat_lon)
+  testthat::expect_mapequal(call_geonames('Paris', 'France', 'Eurezfez'), lat_lon)
+  testthat::expect_mapequal(call_geonames('Paris', 'France'), lat_lon)
+  testthat::expect_mapequal(call_geonames('Paris'), lat_lon)
+  testthat::expect_error(call_geonames('sdkj'))
 })
 
 
