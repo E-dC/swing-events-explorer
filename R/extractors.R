@@ -1,40 +1,6 @@
 # Extractors scrape the content for the target fields and perform some light
 # cleaning (trimming whitespaces, simple capitalisation)
 
-parse_dance_event <- function(homepage_node, body){
-  stopifnot(class(homepage_node) %in% c('xml_nodeset', 'xml_node'))
-  stopifnot(class(body) %in% c('xml_node', 'xml_document', 'xml_nodeset'))
-  
-  tryCatch({
-    slots <- list()
-    slots$name <- get_event_name(body)
-    slots$url <- get_event_url(body)
-    slots$country <- get_event_country(body)
-    slots$location <- get_event_location(body)
-    slots$description <- get_event_description(body)
-    slots$styles <- get_event_styles(body)
-    slots$teachers <- get_event_teachers(body)
-    slots$teachers_confirmed <- get_event_teachers_status(homepage_node)
-    slots$competitions_held <- get_event_competitions(homepage_node)
-    slots$is_new <- get_event_newness(homepage_node)
-    slots$continent <- get_event_continent(homepage_node)
-    slots$format <- get_event_format(homepage_node)
-    
-    slots$styles <- get_event_styles(body)
-    
-    lat_lon <- get_event_lat_lon(slots$location, slots$country, slots$continent)
-    start_end_date <- get_event_start_end_dates(body)
-    
-    slots$latitude <- lat_lon$latitude
-    slots$longitude <- lat_lon$longitude
-    slots$start_date <- start_end_date[1]
-    slots$end_date <- start_end_date[2]
-    return (slots)
-  },
-  error = function (e){print(e); return (NA)})
-}
-
-
 get_html_classes <- function(node){
   (node %>%
      rvest::html_attr(name = 'class', default = '') %>%
