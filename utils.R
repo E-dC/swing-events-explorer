@@ -14,7 +14,7 @@ build_placenames_list <- function(data_file = 'data/geonames.jsonlines'){
 
 call_geonames <- function(location, country='', continent='') {
   
-  do_request <- function(location, country, continent){
+  do_request <- function(location, country, continent=''){
     code_continent <- switch(continent,
       'europe'        = 'EU',
       'Europe'        = 'EU',
@@ -60,15 +60,24 @@ call_geonames <- function(location, country='', continent='') {
     return (list('longitude' = lon, 'latitude' = lat))
   }
 
-  response <- do_request(location, country, continent)
-  result <- parse_response(response)
+  # Try with continent, then without if it fails
+  # For example "Istanbul" "Turkey" "Europe" fails, but not "Istanbul" "Turkey"
+  result <- tryCatch(
+    expr = {do_request(location, country, continent) %>% parse_response()},
+    error = function(e) {
+      tryCatch(
+        expr = {do_request(location, country, '') %>% parse_response()},
+        error = function (e) return (list('longitude' = NA, 'latitude' = NA))
+      )
+    }
+  )
   
-  if (purrr::has_element(result, NA)){
-    els <- strsplit(location, split = '(,| )')[[1]]
-    best_guess <- els[els %in% placenames[[1]]][1]
-    response <- geonames_call(location = els, country = '', code_continent = '')
-    result <- parse_response(response)
-  }
+  # if (purrr::has_element(result, NA)){
+  #   els <- strsplit(location, split = '(,| )')[[1]]
+  #   best_guess <- els[els %in% placenames[[1]]][1]
+  #   response <- do_request(location = els, country = '', continent = '')
+  #   result <- parse_response(response)
+  # }
   
   return (result)
 }
