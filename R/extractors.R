@@ -7,9 +7,15 @@ get_html_classes <- function(node){
      strsplit('\\s+'))[[1]]
 }
 get_html_circles <- function(node){
-  node %>%
+  o <- node %>%
     rvest::html_nodes('a div.circledetails div') %>%
     rvest::html_attr(name = 'class')
+  if (length(o) == 0){
+    o <- node %>%
+      rvest::html_nodes('div.circledetails div') %>%
+      rvest::html_attr(name = 'class')
+  }
+  return (o)
 }
 
 get_event_name <- function(body){
@@ -74,7 +80,7 @@ get_event_continent <- function(node){
   x <- get_html_classes(node)
   x <- x[x %in% c('europe', 'north-america', 'south-america', 'africa', 'asia', 'australasia')]
   if (length(x) == 0){
-    return (NA)
+    return (NA_character_)
   }
   switch(x[1],
          'europe' = 'Europe',
@@ -86,17 +92,46 @@ get_event_continent <- function(node){
          NA
   )
 }
-get_event_format <- function(node){
-  x <- get_html_classes(node)
-  x <- x[x %in% c('exchange', 'weekender', 'dance-camp')]
-  if (length(x) == 0){
-    return (NA)
+
+setGeneric("get_event_format", function(x, ...) standardGeneric("get_event_format"))
+setMethod("get_event_format", "xml_node", function(x){
+  cl <- get_html_classes(x)
+  cl <- cl[cl %in% c('exchange', 'weekender', 'dance-camp')]
+  if (length(cl) == 0){
+    return (NA_character_)
   }
-  switch(x[1],
+  switch(cl[1],
          'circexc' = 'Exchange',
          'exchange' = 'Exchange',
          'weekender' = 'Weekender',
          'dance-camp' = 'Dance Camp',
-         NA
+         NA_character_
   )
-}
+})
+setMethod("get_event_format", "character", function(x, has_teachers){
+  cl <- x %>%
+    stringr::str_to_lower() %>%
+    stringr::str_extract(
+      '(exchange|weekender|weekend|week-end|dance-camp|-camp([0-9]+)?$|^camp-)') %>%
+    stringr::str_replace(
+      '(dance-camp|-camp([0-9]+)?$|^camp-)',
+      replacement = 'dance-camp') %>%
+    stringr::str_replace(
+      '(weekender|weekend|week-end)',
+      replacement = 'weekender')
+  
+  if (is.na(cl)){
+    if (!has_teachers){
+      return ('Exchange')
+    } else {
+      return ('Weekender')
+    }
+  }
+  switch(cl,
+         'circexc' = 'Exchange',
+         'exchange' = 'Exchange',
+         'weekender' = 'Weekender',
+         'dance-camp' = 'Dance Camp',
+         NA_character_
+  )
+})
