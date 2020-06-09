@@ -1,4 +1,29 @@
 
+#' @title A class to hold information about a dance event
+#' @description A (probably not optimal way) of holding all the information
+#'   about a dance event
+#' @slot event_code Character. A unique identifier for the event
+#' @slot name Character.
+#' @slot url Character. The organisers' page for the event
+#' @slot event_format Factor
+#' @slot location Character. Town/City name
+#' @slot country Character.
+#' @slot continent Character.
+#' @slot description Character.
+#' @slot styles Vector of factors. The dances present at the event.
+#' @slot teachers List of character vectors. The sets of teachers at the event.
+#' @slot teachers_confirmed Logical.
+#' @slot competitions_held Logical.
+#' @slot is_new_event Logical.
+#' @slot latitude Numeric.
+#' @slot longitude Numeric.
+#' @slot start_date Date.
+#' @slot end_date Date.
+#' @return An \code{Event} class
+#' @details 
+#' @seealso 
+#' @rdname find_past_event_nodes_and_codes
+#' @export 
 setClass("Event",
          slots = c(
            event_code = 'character',
@@ -39,6 +64,18 @@ setClass("Event",
            end_date = NA
          )
 )
+
+setValidity('Event', function(object){
+  if (is.na(object@event_code)){
+    "event_code must be provided"
+  } else if (is.na(object@name)){
+    "name must be provided"
+  } else if (object@start_date > object@end_date & !is.na(object@end_date)){
+    "start_date must be before end_date, or end_date must be NA"
+  } else {
+  return (TRUE)
+  }
+})
 
 # Event Accessors
 setGeneric("event_code", function(x) standardGeneric("event_code"))
@@ -109,7 +146,7 @@ setGeneric("end_date", function(x) standardGeneric("end_date"))
 setMethod("end_date", "Event", function(x) x@end_date)
 setMethod("end_date", "list", function(x) lapply(x, end_date))
 
-
+#' @export
 setMethod("show", "Event", function(object){
   cat(is(object)[[1]], ': ', object@event_code, '\n',
       object@name, '  (', as.character(object@event_format), ', from ',
@@ -118,7 +155,7 @@ setMethod("show", "Event", function(object){
       
       '  -> ', ifelse(object@teachers_confirmed, 'Teachers confirmed', 'Teachers unconfirmed'), '\n',
       '  -> ', ifelse(object@competitions_held, 'Competitions held', 'No competitions'), '\n',
-      '  -> ', ifelse(object@is_new_event, 'New event!', 'Regular event'), '\n',
+      '  -> ', ifelse(object@is_new_event, 'New event', 'Regular event'), '\n',
       
       '  ', object@location, ' (', object@country, ', ', object@continent, ')\n',
       '  Coordinates: (', object@latitude, ', ', object@longitude, ')\n\n',
@@ -132,16 +169,22 @@ setMethod("show", "Event", function(object){
   
 })
 
-setGeneric("make_event_row", function(x) standardGeneric("make_event_row"))
-setMethod("make_event_row", "Event", function(x){
-  list(
+
+#' @title Construct a row for the database's 'event' table
+#' @param x An Event object
+#' @param sqlite_types Whether to adapt types for an SQLite database
+#' @return A list with all relevant slots
+setGeneric("make_event_row", function(x, ...) standardGeneric("make_event_row"))
+setMethod("make_event_row", "Event", function(x, sqlite_types = FALSE){
+  o <- list(
     event_code = event_code(x),
     name = name(x),
     url = url(x),
-    event_format = event_format(x),
+    description = description(x),
+    event_format = event_format(x) %>% as.factor(),
     location = location(x),
-    country = country(x),
-    continent = continent(x),
+    country = country(x) %>% as.factor(),
+    continent = continent(x) %>% as.factor(),
     latitude = latitude(x),
     longitude = longitude(x),
     start_date = start_date(x),
@@ -149,24 +192,42 @@ setMethod("make_event_row", "Event", function(x){
     teachers_confirmed = teachers_confirmed(x),
     is_new_event = is_new_event(x),
     competitions_held = competitions_held(x))
+  if (sqlite_types){
+    o$start_date <- as.character(o$start_date)
+    o$end_date <- as.character(o$end_date)
+    o$event_format <- as.character(o$event_format)
+    o$country <- as.character(o$country)
+    o$continent <- as.character(o$continent)
+  }
+  return (o)
 })
 
-setGeneric("make_event_table", function(l) standardGeneric("make_event_table"))
-setMethod("make_event_table", "list", function(l){
-  dplyr::bind_rows(lapply(l, make_event_row))
+#' @export
+setGeneric("make_event_table", function(l, ...) standardGeneric("make_event_table"))
+#' @export
+setMethod("make_event_table", "list", function(l, sqlite_types = FALSE){
+  dplyr::bind_rows(lapply(l, make_event_row, sqlite_types = sqlite_types))
 })
 
-setGeneric("make_style_rows", function(x) standardGeneric("make_style_rows"))
-setMethod("make_style_rows", "Event", function(x){
-  tibble::tibble(
-    event_code = rep(event_code(x),
-                     length(styles(x))),
-    style = styles(e))
+setGeneric("make_style_rows", function(x, ...) standardGeneric("make_style_rows"))
+setMethod("make_style_rows", "Event", function(x, sqlite_types = FALSE){
+  a <- rep(event_code(x), length(styles(x)))
+  b <- styles(x)
+  if (sqlite_types){
+    t <- tibble::tibble(event_code = a,
+                        style = b)
+  } else {
+    t <- tibble::tibble(event_code = a,
+                        style = b  %>% as.factor())
+  }
+  return (t)
 })
 
-setGeneric("make_style_table", function(l) standardGeneric("make_style_table"))
-setMethod("make_style_table", "list", function(l){
-  dplyr::bind_rows(lapply(l, make_style_rows))
+#' @export
+setGeneric("make_style_table", function(l, ...) standardGeneric("make_style_table"))
+#' @export
+setMethod("make_style_table", "list", function(l, sqlite_types = FALSE){
+  dplyr::bind_rows(lapply(l, make_style_rows, sqlite_types = sqlite_types))
 })
 
 setGeneric("make_teacher_rows", function(x) standardGeneric("make_teacher_rows"))
@@ -177,51 +238,60 @@ setMethod("make_teacher_rows", "Event", function(x){
            function(t) list(event_code = event_code(x), teacher_1 = t[1], teacher_2 = t[2])))
 })
 
+#' @export
 setGeneric("make_teacher_table", function(l) standardGeneric("make_teacher_table"))
+#' @export
 setMethod("make_teacher_table", "list", function(l){
   dplyr::bind_rows(lapply(l, make_teacher_rows))
 })
 
 # Helper
-Event <- function(event_page, homepage_node, event_page_url){
+#' @export
+Event <- function(event_page, homepage_node, event_code){
 
+  node_na <- is.na(homepage_node)
+  
   stopifnot(is(event_page)[[1]] == 'xml_document')
-  stopifnot(is(homepage_node)[[1]] == 'xml_node')
-  stopifnot(is(event_page_url)[[1]] == 'character')
+  stopifnot(is(homepage_node)[[1]] == 'xml_node' | node_na)
+  stopifnot(is(event_code)[[1]] == 'character')
   
   slots <- list('Event')
 
-  slots$event_code <- event_page_url %>%
-    stringr::str_split('/') %>%
-    purrr::as_vector() %>%
-    tail(n = 1)
+  slots$event_code <- event_code
     
-  slots$name <- get_event_name(event_page)
-  slots$url <- get_event_url(event_page)
+  slots$name <- get_event_name(event_page) %>% as.character()
+  slots$url <- get_event_url(event_page) %>% as.character()
 
   start_end_date <- get_event_start_end_dates(event_page)
-  slots$start_date <- lubridate::as_date(start_end_date[1])
-  slots$end_date <- lubridate::as_date(start_end_date[2])
+  slots$start_date <- start_end_date[1] %>% lubridate::as_date()
+  slots$end_date <- start_end_date[2] %>% lubridate::as_date()
   
-  slots$country <- get_event_country(event_page)
-  slots$location <- get_event_location(event_page)
-  slots$continent <- tryCatch({get_event_continent(homepage_node)}, error = function(e) NA)
+  slots$country <-  get_event_country(event_page) %>% as.character()
+  slots$location <- get_event_location(event_page) %>% as.character()
+  slots$continent <- ifelse(!node_na,
+                            tryCatch({get_event_continent(homepage_node)}, error = function(e) NA), NA) %>% as.character()
   
   lat_lon <- get_event_lat_lon(slots$location, slots$country, slots$continent)
-  slots$latitude <- as.double(lat_lon$latitude)
-  slots$longitude <- as.double(lat_lon$longitude)
-
-  slots$event_format <- as.factor(get_event_format(homepage_node))
-  slots$description <- get_event_description(event_page)
-  slots$styles <- as.factor(get_event_styles(event_page))
+  slots$latitude <- lat_lon$latitude %>% as.double()
+  slots$longitude <- lat_lon$longitude %>% as.double()
   
-  slots$teachers_confirmed <- get_event_teachers_status(homepage_node)
-  slots$competitions_held <- get_event_competitions(homepage_node)
-  slots$is_new_event <- get_event_newness(homepage_node)
+  slots$teachers_confirmed <- ifelse(!node_na,
+                                     get_event_teachers_status(homepage_node), NA)
+  slots$competitions_held <- ifelse(!node_na,
+                                    get_event_competitions(homepage_node), NA)
+  slots$is_new_event <- ifelse(!node_na,
+                               get_event_newness(homepage_node), NA)
       
-  slots$teachers <- get_event_teachers(event_page)
+  slots$teachers <- get_event_teachers(event_page) %>% as.list()
 
+  slots$event_format <- ifelse(!node_na,
+                               get_event_format(homepage_node),
+                               get_event_format(slots$event_code,
+                                                has_teachers = !is.na(slots$teachers))) %>% as.factor()
+  slots$description <- get_event_description(event_page) %>% as.character()
+  slots$styles <- get_event_styles(event_page) %>% as.factor()
+  
   tryCatch(
-    expr = {do.call(methods::new, slots[!is.na(slots)])},
+    expr = {do.call(methods::new, slots)},
     error = function(e) {cat(paste(slots$name, ':\n', e)) ; NA})
 }
