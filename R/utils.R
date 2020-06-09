@@ -12,6 +12,35 @@ build_placenames_list <- function(data_file = 'data/geonames.jsonlines'){
 }
 # placenames <- build_placenames_list()
 
+#' @title Get latitude and longitude from GeoNames
+#' @description \code{call_geonames()} is a wrapper to call the Geonames database
+#'   and retrieve latitude and longitude for a given location
+#' @param location A placename.
+#' @param country A country name, useful for those towns appearing in multiple
+#'   countries, Default: ''
+#' @param continent A continent name, useful for the same reason as the 
+#'   \code{country} parameter, Default: ''
+#' @return A named list \code{latitude, longitude)}, where each value is either
+#'   a \code{double} or \code{NA}.
+#' @details \code{continent} parameter is ignored if a first attempt with it
+#'   fails.
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  call_geonames('Paris', 'France')
+#'  call_geonames('Istanbul', 'Turkey', 'Asia')# Still works despite geonames placing it in Europe
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[httr]{POST}}
+#'  \code{\link[xml2]{read_xml}}
+#'  \code{\link[rvest]{html_nodes}},\code{\link[rvest]{html_text}}
+#' @rdname call_geonames
+#' @export 
+#' @import magrittr
+#' @importFrom httr POST
+#' @importFrom xml2 read_html
+#' @importFrom rvest html_node html_text
 call_geonames <- function(location, country='', continent='') {
   
   do_request <- function(location, country, continent=''){
