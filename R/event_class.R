@@ -1,6 +1,6 @@
 
 #' @title A class to hold information about a dance event
-#' @description A (probably not optimal way) of holding all the information
+#' @description A (likely non-optimal) way of holding all the information
 #'   about a dance event
 #' @slot event_code Character. A unique identifier for the event
 #' @slot name Character.
@@ -20,11 +20,9 @@
 #' @slot start_date Date.
 #' @slot end_date Date.
 #' @return An \code{Event} class
-#' @details 
-#' @seealso 
-#' @rdname find_past_event_nodes_and_codes
+#' @rdname new_Event
 #' @export 
-setClass("Event",
+new_Event <- setClass("Event",
          slots = c(
            event_code = 'character',
            name = 'character',
@@ -65,7 +63,7 @@ setClass("Event",
          )
 )
 
-setValidity('Event', function(object){
+validate_Event <- setValidity('Event', function(object){
   if (is.na(object@event_code)){
     "event_code must be provided"
   } else if (is.na(object@name)){
@@ -174,6 +172,7 @@ setMethod("show", "Event", function(object){
 #' @param x An Event object
 #' @param sqlite_types Whether to adapt types for an SQLite database
 #' @return A list with all relevant slots
+#' @rdname make_event_row
 setGeneric("make_event_row", function(x, ...) standardGeneric("make_event_row"))
 setMethod("make_event_row", "Event", function(x, sqlite_types = FALSE){
   o <- list(

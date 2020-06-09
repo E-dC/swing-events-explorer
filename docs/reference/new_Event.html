@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parse the Swing Plan-It past events page — find_past_event_nodes_and_codes • swingscrapeit</title>
+<title>A class to hold information about a dance event — Event-class • swingscrapeit</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="Parse the Swing Plan-It past events page — find_past_event_nodes_and_codes" />
-<meta property="og:description" content="Extract the html nodes and event codes (necessary to
-  rebuild the past events urls) from the past events page" />
+<meta property="og:title" content="A class to hold information about a dance event — Event-class" />
+<meta property="og:description" content="A (likely non-optimal) way of holding all the information
+  about a dance event" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -101,49 +101,68 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Parse the Swing Plan-It past events page</h1>
+    <h1>A class to hold information about a dance event</h1>
     
-    <div class="hidden name"><code>find_past_event_nodes_and_codes.Rd</code></div>
+    <div class="hidden name"><code>new_Event.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extract the html nodes and event codes (necessary to
-  rebuild the past events urls) from the past events page</p>
+    <p>A (likely non-optimal) way of holding all the information
+  about a dance event</p>
     </div>
 
-    <pre class="usage"><span class='fu'>find_past_event_nodes_and_codes</span>(<span class='no'>doc</span>)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>doc</th>
-      <td><p>An <code>xml_document</code> of the past-events page</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A named list with two values: <code>event_nodes</code> and <code>event_codes</code>,
-  where <code>event_nodes</code> is a list of <code>xml_node</code> and <code>event_codes</code>
-  is a character vector.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>An <code>Event</code> class</p>
+    <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
-    <p>There are some weirdness with events whose name starts with a number,
-  so we get the <code>event_code</code> by manipulating the event's name.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    
 
-    <div class='dont-index'><p><code><a href='https://rvest.tidyverse.org/reference/html_nodes.html'>html_nodes</a></code>,<code><a href='https://rvest.tidyverse.org/reference/html_text.html'>html_text</a></code>
- <code><a href='https://stringr.tidyverse.org/reference/str_match.html'>str_match</a></code>,<code><a href='https://stringr.tidyverse.org/reference/case.html'>case</a></code>,<code><a href='https://stringr.tidyverse.org/reference/str_replace.html'>str_replace</a></code></p></div>
+<dl class='dl-horizontal'>
+<dt><code>event_code</code></dt><dd><p>Character. A unique identifier for the event</p></dd>
+
+<dt><code>name</code></dt><dd><p>Character.</p></dd>
+
+<dt><code>url</code></dt><dd><p>Character. The organisers' page for the event</p></dd>
+
+<dt><code>event_format</code></dt><dd><p>Factor</p></dd>
+
+<dt><code>location</code></dt><dd><p>Character. Town/City name</p></dd>
+
+<dt><code>country</code></dt><dd><p>Character.</p></dd>
+
+<dt><code>continent</code></dt><dd><p>Character.</p></dd>
+
+<dt><code>description</code></dt><dd><p>Character.</p></dd>
+
+<dt><code>styles</code></dt><dd><p>Vector of factors. The dances present at the event.</p></dd>
+
+<dt><code>teachers</code></dt><dd><p>List of character vectors. The sets of teachers at the event.</p></dd>
+
+<dt><code>teachers_confirmed</code></dt><dd><p>Logical.</p></dd>
+
+<dt><code>competitions_held</code></dt><dd><p>Logical.</p></dd>
+
+<dt><code>is_new_event</code></dt><dd><p>Logical.</p></dd>
+
+<dt><code>latitude</code></dt><dd><p>Numeric.</p></dd>
+
+<dt><code>longitude</code></dt><dd><p>Numeric.</p></dd>
+
+<dt><code>start_date</code></dt><dd><p>Date.</p></dd>
+
+<dt><code>end_date</code></dt><dd><p>Date.</p></dd>
+
+</dl>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#slots">Slots</a></li>
     </ul>
 
   </div>
