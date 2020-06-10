@@ -31,6 +31,8 @@ A (likely non-optimal) way of holding all the information
 
 \item{\code{description}}{Character.}
 
+\item{\code{teacher_description}}{Character.}
+
 \item{\code{styles}}{Vector of factors. The dances present at the event.}
 
 \item{\code{teachers}}{List of character vectors. The sets of teachers at the event.}
