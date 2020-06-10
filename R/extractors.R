@@ -60,6 +60,13 @@ get_event_description <- function(body){
     rvest::html_node(xpath = '//div[@class="postcardleft"]/div[@class="scroll-pane2"]/p/text()') %>%
     rvest::html_text(trim = FALSE)
 }
+
+get_teacher_description <- function(body){
+  body %>%
+    rvest::html_node(xpath = '//div[contains(@class, "postcardright")]/p/following-sibling::div/p/text()') %>%
+    rvest::html_text(trim = FALSE)
+}
+
 get_event_teachers <- function(body){
   body %>%
     rvest::html_node(xpath = '//div[contains(@class, "postcardright")]/p/following-sibling::div/p/text()') %>%

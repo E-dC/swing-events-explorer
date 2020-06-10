@@ -10,6 +10,7 @@
 #' @slot country Character.
 #' @slot continent Character.
 #' @slot description Character.
+#' @slot teacher_description Character.
 #' @slot styles Vector of factors. The dances present at the event.
 #' @slot teachers List of character vectors. The sets of teachers at the event.
 #' @slot teachers_confirmed Logical.
@@ -32,6 +33,7 @@ new_Event <- setClass("Event",
            location = 'character',
            continent = 'character',
            description = 'character',
+           teacher_description = 'character',
            styles = 'factor',
            teachers = 'list',
            teachers_confirmed = 'logical',
@@ -51,6 +53,7 @@ new_Event <- setClass("Event",
            location = NA_character_,
            continent = NA_character_,
            description = NA_character_,
+           teacher_description = NA_character_,
            styles = factor(),
            teachers = list(),
            teachers_confirmed = NA,
@@ -108,6 +111,10 @@ setGeneric("description", function(x) standardGeneric("description"))
 setMethod("description", "Event", function(x) x@description)
 setMethod("description", "list", function(x) lapply(x, description))
 
+setGeneric("teacher_description", function(x) standardGeneric("teacher_description"))
+setMethod("teacher_description", "Event", function(x) x@teacher_description)
+setMethod("teacher_description", "list", function(x) lapply(x, teacher_description))
+
 setGeneric("styles", function(x) standardGeneric("styles"))
 setMethod("styles", "Event", function(x) x@styles)
 setMethod("styles", "list", function(x) lapply(x, styles))
@@ -160,7 +167,8 @@ setMethod("show", "Event", function(object){
       
       '  Styles: ', paste(object@styles, collapse = ', '), '\n',
       '  Description: ', object@description, '\n',
-      '  Teachers: ', paste(object@teachers, collapse = ' ,'), '\n\n',
+      '  Teacher Description: ', object@teacher_description, '\n',
+      '  Parse attempt of the teachers: ', paste(object@teachers, collapse = ' ,'), '\n\n',
       '  More information at: ', object@url, '\n',
       sep = '')
   
@@ -180,6 +188,7 @@ setMethod("make_event_row", "Event", function(x, sqlite_types = FALSE){
     name = name(x),
     url = url(x),
     description = description(x),
+    teacher_description = teacher_description(x),
     event_format = event_format(x) %>% as.factor(),
     location = location(x),
     country = country(x) %>% as.factor(),
@@ -280,7 +289,8 @@ Event <- function(event_page, homepage_node, event_code){
                                     get_event_competitions(homepage_node), NA)
   slots$is_new_event <- ifelse(!node_na,
                                get_event_newness(homepage_node), NA)
-      
+  
+  slots$teacher_description <- get_teacher_description(event_page) %>% as.character()
   slots$teachers <- get_event_teachers(event_page) %>% as.list()
 
   slots$event_format <- ifelse(!node_na,

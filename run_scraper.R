@@ -27,7 +27,7 @@ if (! endsWith(args$dbname, '.rds')){
   if (!'event' %in% tables){
     DBI::dbCreateTable(db_conn, 'event',
                        c('event_code' = 'character', 'name' = 'character', 'url' = 'character', 'event_format' = 'character',
-                       'description' = 'character',
+                       'description' = 'character', 'teacher_description' = 'character',
                        'location' = 'character', 'country' = 'character', 'continent' = 'character',
                        'latitude' = 'numeric', 'longitude' = 'numeric',
                        'start_date' = 'character', 'end_date' = 'character',
