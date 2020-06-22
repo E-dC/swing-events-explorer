@@ -71,7 +71,8 @@ get_event_teachers <- function(body){
   body %>%
     rvest::html_node(xpath = '//div[contains(@class, "postcardright")]/p/following-sibling::div/p/text()') %>%
     rvest::html_text(trim = FALSE) %>%
-    extract_clean_sets()
+    process_teacher_description() %>%
+    find_sets(pattern_vectors = capturing_patterns)
 }
 
 get_event_newness <- function(node){
