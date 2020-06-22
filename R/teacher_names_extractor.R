@@ -36,7 +36,7 @@ origin_pattern <- stringr::regex(
   ignore_case = TRUE)
 
 more_pattern <- stringr::regex(
-  '(and|&)?( +)?(others?|more|bands?|teachers?|instructors?)( +).{0,10}( +)?(TBC|TBA|.*?(announced|come|coming|confirme?d?)?( +)?(very)?( +)?(soon)?)',
+  '(and|&)?( +)?(others?| more|bands?|teachers?|instructors?)( +).{0,10}( +)?(TBC|TBA|.*?(announced|come|coming|confirme?d?)?( +)?(very)?( +)?(soon)?)',
   ignore_case = TRUE
 )
 
@@ -57,7 +57,7 @@ link_pattern <- stringr::regex(
   ignore_case = TRUE
 )
 sep_pattern <- stringr::regex(
-  '(,|;|\n)',
+  '(,|;|\n| - )',
   ignore_case = TRUE
 )
 
