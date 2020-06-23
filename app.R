@@ -1,3 +1,17 @@
+#! /usr/bin/Rscript
+# ---------- Read in arguments, setup options ----------
+require('docopt', quietly = TRUE)
+"Run Shiny app for SwingPlanIt events. 
+Use a dbname ending with .rda.
+
+Usage:
+  app.R  [<dbname>]
+
+Options:
+-h --help         Show this" -> doc
+
+args <- docopt::docopt(doc) 
+
 library(shiny)
 library(ggplot2)
 library(dplyr)
@@ -6,7 +20,12 @@ library(leaflet)
 library(lubridate)
 
 # This stuff won't change for each user, load it as little as possible
-load(file = 'data/swp_db.rds')
+if (is.null(args$dbname)){
+    load(file = 'data/swp_db.rda')
+} else {
+    load(file = args$dbname)
+}
+    
 dance_styles <- list('Balboa', 'Boogie Woogie', 'Blues', 'Charleston', 'Jazz', 'Lindy Hop', 'Shag')
 continents <- list('Africa', 'Australasia', 'Asia', 'Europe', 'North America', 'South America')
 countries <- as.list(
@@ -77,7 +96,7 @@ ui <- bootstrapPage(
                     inputPanel(
                         dateRangeInput('date_range',
                                        'Select date range',
-                                       end = now + lubridate::years(1)),
+                                       end = lubridate::now() + lubridate::years(1)),
                         
                         selectInput('continent_filter',
                                     'Filter by continent', 
@@ -131,7 +150,6 @@ ui <- bootstrapPage(
 server <- function(input, output) {
 
     # Base structures
-    now <- lubridate::now()
     base_map_data <- event_table
     
     # Triggers
