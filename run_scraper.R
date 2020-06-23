@@ -21,7 +21,7 @@ library(magrittr)
 
 # ---------- Check the DB, set up tables if necessary ----------
 cat('Prepping DB...\n')
-if (! endsWith(args$dbname, '.rds')){
+if (endsWith(args$dbname, '.sqlite')){
   db_conn <- DBI::dbConnect(RSQLite::SQLite(), args$dbname)
   tables <- DBI::dbListTables(db_conn)
   if (!'event' %in% tables){
@@ -179,7 +179,7 @@ print(style_table_new)
 
 # ---------- Add data to DB ----------
 cat('Adding to DB...\n')
-if (! endsWith(args$dbname, '.rds')){
+if (endsWith(args$dbname, '.sqlite')){
   event_table_new[is.na(event_table_new)] <- ''
   teacher_table_new[is.na(teacher_table_new)] <- ''
   style_table_new[is.na(style_table_new)] <- ''
