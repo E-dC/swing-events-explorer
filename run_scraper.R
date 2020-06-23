@@ -2,7 +2,7 @@
 # ---------- Read in arguments, setup options ----------
 require('docopt', quietly = TRUE)
 "Scrape events data from SwingPlanIt. 
-Use a dbname ending with .rds to load and dump data using R objects.
+Use a dbname ending with .rda to load and dump data using R objects.
 
 Usage:
   run_scraper.R  <dbname> [--nopast] [--noguess] [--nofilter] [--limit <LIMIT>]

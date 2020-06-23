@@ -1,4 +1,4 @@
-load(file = 'data/geo_structures.rds')
+load(file = 'data/geo_structures.rda')
 # ---------- Construct handy useful geo structures ----------
 get_placenames <- function(data_file = 'data/geonames.jsonlines', pop_cutoff = 100){
   json_data <- jsonlite::stream_in(file(data_file), verbose = FALSE)
@@ -29,7 +29,7 @@ make_country2continent <- function(){
 make_structures <- function(data_file = 'data/geonames.jsonlines', pop_cutoff = 100){
   placenames <- get_placenames(data_file, pop_cutoff)
   country2continent <- make_country2continent()
-  save(placenames, country2continent, file = 'data/geo_structures.rds')
+  save(placenames, country2continent, file = 'data/geo_structures.rda')
 }
 
 # ---------- Fallback function and utilities ----------
