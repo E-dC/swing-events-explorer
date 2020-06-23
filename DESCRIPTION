@@ -1,11 +1,11 @@
 Package: swingscrapeit
 Type: Package
-Title: Scraper and shiny app for Swing Plan It event
+Title: Scraper for SwingPlanIt event
 Version: 0.1.0
 Author: EdC
-Maintainer: <nocontact@nocontact.com>
-Description: Utilities for scraping and storing Swing Plan-it (and potentially
-    other sources) data. Meant to be used in separate Shiny app(s).
+Maintainer: <e.decrecy@posteo.net>
+Description: Utilities for scraping and storing SwingPlanIt (and potentially
+    other sources) data. Meant to be used in a separate Shiny app.
 License: GPLv3
 Encoding: UTF-8
 LazyData: true

@@ -111,7 +111,12 @@
   and retrieve latitude and longitude for a given location</p>
     </div>
 
-    <pre class="usage"><span class='fu'>call_geonames</span>(<span class='no'>location</span>, <span class='kw'>country</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>continent</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>call_geonames</span>(
+  <span class='no'>location</span>,
+  <span class='kw'>country</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>continent</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>bypass_first_attempts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,6 +134,11 @@ countries, Default: ''</p></td>
       <th>continent</th>
       <td><p>A continent name, useful for the same reason as the 
 <code>country</code> parameter, Default: ''</p></td>
+    </tr>
+    <tr>
+      <th>bypass_first_attempts</th>
+      <td><p>Logical. Whether to go straight to the fallback
+Default: FALSE</p></td>
     </tr>
     </table>
 

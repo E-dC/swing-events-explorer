@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scraper and shiny app for Swing Plan It event • swingscrapeit</title>
+<title>Scraper for SwingPlanIt event • swingscrapeit</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Scraper and shiny app for Swing Plan It event">
-<meta property="og:description" content="Utilities for scraping and storing Swing Plan-it (and potentially
-    other sources) data. Meant to be used in separate Shiny app(s).">
+<script src="pkgdown.js"></script><meta property="og:title" content="Scraper for SwingPlanIt event">
+<meta property="og:description" content="Utilities for scraping and storing SwingPlanIt (and potentially
+    other sources) data. Meant to be used in a separate Shiny app.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -60,8 +60,23 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-Utilities for scraping and storing Swing Plan-it (and potentially
-    other sources) data. Meant to be used in separate Shiny app(s).
+<div id="swingplanit-data-explorer" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#swingplanit-data-explorer" class="anchor"></a>SwingPlanIt data explorer</h1></div>
+<p>Event scraper and Shiny app for the SwingPlanIt website.<br>
+This was more of an excuse to learn to use Shiny.</p>
+<p>The project consists of 2 parts:</p>
+<ul>
+<li>The <code>swingscrapeit</code> package contains utilities necessary to retrieve events information from the SwingPlanIt website.<br>
+The scraper itself is run with the <code>run_scraper.R</code> script. It is slow on purpose, so as not to overwhelm their server with requests.</li>
+<li>The Shiny app <code>app.R</code>, which allows to visualizes the scraped data in a map, to filter it and to search event descriptions.</li>
+</ul>
+<div id="swingscrapeit" class="section level3">
+<h3 class="hasAnchor">
+<a href="#swingscrapeit" class="anchor"></a><code>swingscrapeit</code>
+</h3>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
