@@ -1,17 +1,17 @@
+#! /usr/bin/Rscript
 # ---------- Read in arguments, setup options ----------
 require('docopt', quietly = TRUE)
-"Scrape events data from Swing Plan-It. 
+"Scrape events data from SwingPlanIt. 
 Use a dbname ending with .rds to load and dump data using R objects.
 
 Usage:
-  scrape_events.R  <dbname> [--nopast] [--noguess] [--nofilter] [--limit <LIMIT>]
+  run_scraper.R  <dbname> [--nopast] [--noguess] [--nofilter] [--limit <LIMIT>]
 
 Options:
 -h --help         Show this
 --nopast          Don't attempt to scrape past events page, but still try to guess.
 --noguess         Don't attempt to guess past events codes
 --nofilter        Don't filter out seen events
---update          Try to update DB events with 'Unconfirmed teachers'
 --limit=<LIMIT>   Limit to LIMIT downloads" -> doc
 
 args <- docopt::docopt(doc)
