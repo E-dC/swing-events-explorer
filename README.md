@@ -5,31 +5,32 @@ Event scraper and Shiny app for the SwingPlanIt website.
 The project consists of 2 parts:
 * The `swingscrapeit` package contains utilities necessary to retrieve events information from the SwingPlanIt website.  
 The scraper itself is run with the `run_scraper.R` script. It is slow on purpose, so as not to overwhelm their server with requests.
-* The Shiny app `app.R` to show, filter, and search events in a map view.
+* The Shiny app `app.R` to show, filter, and search events in a map view. See an instance in action on [shinyapps.io](https://e-dc.shinyapps.io/swing-events-explorer/).
 
 ### Usage `run_scraper.R`
 
 ##### Basic usage 
 To scrape events, make sure you have `Rscript` installed, and run `run_scraper.R` with it, or make `run_scraper.R` executable and run it directly. In its simplest form:
-```
-run_scraper.R  <dbname>
-```
-Show more options and help with `run_scraper --help`:
-<pre>
-<b>$ run_scraper.R --help</b>
 
+<pre><b>$ run_scraper.R  path/to/my/db.rda</b></pre>
+
+Show more options and help:
+<pre><b>$ run_scraper.R --help</b></pre>
+
+```
 Scrape events data from SwingPlanIt. 
 Use a dbname ending with .rda to load and dump data using R objects.
 
 Usage:
-  run_scraper.R  \<dbname> [--nopast] [--noguess] [--nofilter] [--limit \<LIMIT>]
+  run_scraper.R  <dbname> [--nopast] [--noguess] [--nofilter] [--limit <LIMIT>]
 
 Options:
 -h --help         Show this
 --nopast          Don't attempt to scrape past events page, but still try to guess.
 --noguess         Don't attempt to guess past events codes
 --nofilter        Don't filter out seen events
---limit=\<LIMIT>   Limit to LIMIT downloads</pre>
+--limit=<LIMIT>   Limit to LIMIT downloads
+```
 
 
 ##### Database argument
@@ -55,10 +56,12 @@ The scraper relies on Geonames to figure out the latitude and longitude of the l
 
 ### Usage `app.R`
 Just run `Rscript app.R my_db_name.rda` and open a browser tab with the URL given in the terminal, for example:
-<pre>
-<b>$ Rscript app.R data/my_db.rda</b>
-Attaching package: ‘dplyr’<br>
-... more R stuff ...<br>
-Listening on http://127.0.0.1:5445</pre>
+<pre><b>$ Rscript app.R data/my_db.rda</b></pre>
+
+```
+Attaching package: ‘dplyr’
+... more R stuff ...
+Listening on http://127.0.0.1:5445
+```
 
 
