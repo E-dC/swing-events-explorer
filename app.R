@@ -142,7 +142,41 @@ ui <- bootstrapPage(
         ),
         
         tabPanel(
-            'About')
+            'About',
+            HTML(
+"<h3>Data</h3>",
+"<p>",
+  'The data used to map the events is coming from <a href="https://www.swingplanit.com">SwingPlanIt</a>.',
+  '<br>',
+  "So far I haven't set up any automated updating of the database, and so there might be missing events or some missing descriptions.
+  They'll appear when I update it manually, or when I get to set a CRON job!",
+  '<br>',
+  "I haven't got plans to add more sources yet, so any events not advertised on SwingPlanIt won't appear on the map.",
+"</p>",
+
+"<h3>Using the filters</h3>",
+  "<p>I think all filters are pretty self-explanatory, but maybe just note that:</p>",
+    "<ul>",
+      "<li>",
+           "Selected filters of different types are used in conjunction, i.e.",
+           "<code>[Continent: Europe] AND [Country: France OR Brazil]</code>",
+           "means that each event displayed must be either in Europe <strong>and</strong> in France,",
+           "or in Europe <strong>and</strong> in Brazil.",
+           "Obviously, this means Brazilian events won't actually end up being displayed.",
+      "</li>",
+      "<li>",
+           "You can select <strong>several elements</strong> in the continent, country and dance styles filters.",
+      "</li>",
+      "<li>",
+           "The event description and teacher description search boxes support regular expressions.",
+           "However, if your regex is broken, it won't tell you and just fail to look up correctly.",
+       "</li>",
+    "</ul>",
+
+"<h3>Code</h3>",
+  '<p>The code for both the scraper and the app is available on <a href="https://github.com/E-dC/swing-events-explorer">this github repository</a>.</p>'
+)
+            )
     )
 )
 
@@ -258,6 +292,8 @@ server <- function(input, output) {
                  p(strong(event_info()$event_format),
                    strong(' -', paste0(event_info()$dance_styles,
                               collapse = ', '))),
+                 
+                 p(a(event_info()$url, href = event_info()$url)),
                  
                  hr(),
                  
