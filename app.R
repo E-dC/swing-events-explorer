@@ -285,6 +285,12 @@ server <- function(input, output) {
                    paste0('(', event_info()$country, ')')
                  ),
                  
+                 if (event_info()$start_date != "Unknown"){
+                   if (event_info()$start_date < lubridate::now()){
+                     p('PAST EVENT')
+                   }
+                 },
+                 
                  p('From ', strong(event_info()$start_date),
                    ' to ', strong(event_info()$end_date)
                  ),
